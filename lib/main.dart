@@ -64,8 +64,7 @@ class ProductScreen extends StatelessWidget {
       ),
       drawer: AppDrawer.buildDrawer(context),
       body: Container(
-        // Añadimos un Container como padre del SingleChildScrollView
-        color: Colors.green, // Establecemos el color de fondo en verde
+        color: Colors.green,
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -107,6 +106,7 @@ class ProductScreen extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: const AppBottomNavigationBar(),
     );
   }
 
@@ -163,10 +163,15 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.menu), // Botón de menú a la izquierda
-          onPressed: () {
-            Scaffold.of(context).openDrawer();
+        leading: Builder(
+          // Usar Builder para obtener el contexto del Scaffold
+          builder: (context) {
+            return IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openDrawer(); // Mostrar el Drawer
+              },
+            );
           },
         ),
         title: Center(
@@ -180,8 +185,7 @@ class ProfileScreen extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon:
-                const Icon(Icons.arrow_back), // Botón de retroceso a la derecha
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -269,6 +273,7 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: const AppBottomNavigationBar(),
     );
   }
 
@@ -314,18 +319,22 @@ class AppDrawer {
             }),
             _buildDrawerItem(Icons.shopping_bag, 'Productos', () {
               Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProductScreen(),
+                ),
+              );
             }),
             _buildDrawerItem(Icons.info, 'Información', () {
               Navigator.pop(context);
             }),
             _buildDrawerItem(Icons.person, 'Ver Perfil', () {
-              // Navegar a la pantalla de perfil al hacer clic
-              Navigator.pop(context); // Cerrar el drawer antes de navegar
+              Navigator.pop(context);
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      const ProfileScreen(), // Usa la clase ProfileScreen
+                  builder: (context) => const ProfileScreen(),
                 ),
               );
             }),
@@ -392,6 +401,53 @@ class AppDrawer {
           ],
         ),
       ),
+    );
+  }
+}
+
+// Nueva clase para la barra de navegación inferior
+class AppBottomNavigationBar extends StatelessWidget {
+  const AppBottomNavigationBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavigationBar(
+      backgroundColor: Colors.grey[800],
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Colors.grey,
+      items: const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Inicio',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.shopping_bag),
+          label: 'Productos',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Perfil',
+        ),
+      ],
+      onTap: (int index) {
+        // Manejar la navegación al tocar un elemento de la barra de navegación
+        if (index == 0) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ProductScreen()),
+          );
+        } else if (index == 1) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ProductScreen()),
+          );
+        } else if (index == 2) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ProfileScreen()),
+          );
+        }
+      },
     );
   }
 }
